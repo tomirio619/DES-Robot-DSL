@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bluetooth.BluetoothConnector;
-import bluetooth.MasterBluetoothConnector;
-import bluetooth.SlaveBluetoothConnector;
+import bluetooth.BluetoothConnectorContainer;
 import lejos.robotics.Color;
 import lejos.robotics.subsumption.Behavior;
 import main.Robot;
@@ -22,11 +21,7 @@ public class DetectColorBehavior implements Behavior{
 		this.robot = r;
 		this.colors = new ArrayList<>();
 		
-		if(master)
-			this.connector = new MasterBluetoothConnector(4);
-		else{
-			this.connector = new SlaveBluetoothConnector();
-		}
+		connector = new BluetoothConnectorContainer(master).getInstance();
 	}
 	
 	@Override

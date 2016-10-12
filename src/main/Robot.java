@@ -65,7 +65,6 @@ public class Robot {
 		//
 		//
 		boolean master = false;
-		//FIXME: bluetoothConnector object accessible from detectColorBehavior and ReadBluetoothMessageBehavior.
 		Behavior[] behaviors = {new DriveForwardBehavior(this), new DetectColorBehavior(this, master), new ReadBluetoothMessageBehavior(this, master)};
 		Arbitrator arbitrator = new Arbitrator(behaviors);
 		arbitrator.go();

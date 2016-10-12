@@ -1,8 +1,7 @@
 package behaviors;
 
 import bluetooth.BluetoothConnector;
-import bluetooth.MasterBluetoothConnector;
-import bluetooth.SlaveBluetoothConnector;
+import bluetooth.BluetoothConnectorContainer;
 import lejos.robotics.subsumption.Behavior;
 import main.Robot;
 
@@ -13,13 +12,7 @@ public class ReadBluetoothMessageBehavior implements Behavior{
 	
 	public ReadBluetoothMessageBehavior(Robot r, boolean master) {
 		this.robot = r;
-		if(!master){
-			connector = new SlaveBluetoothConnector();
-		}else{
-			connector = new MasterBluetoothConnector(4);
-		}
-			
-	
+		connector = new BluetoothConnectorContainer(master).getInstance();
 	}
 	
 	@Override
@@ -41,7 +34,6 @@ public class ReadBluetoothMessageBehavior implements Behavior{
 	@Override
 	public void suppress() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
