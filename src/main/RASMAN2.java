@@ -1,6 +1,6 @@
 package main;
 
-public class Main {
+public class RASMAN2 {
 
 	public static void main(String[] args) {
 		String robotName = "RASMAN";

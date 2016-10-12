@@ -1,8 +1,10 @@
 package main;
 import behaviors.AvoidBlackBorder;
 import behaviors.CheckDistanceBehavior;
+import behaviors.DetectColorBehavior;
 import behaviors.DriveForwardBehavior;
 import behaviors.OnTouchTurnBehavior;
+import behaviors.ReadBluetoothMessageBehavior;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
@@ -28,7 +30,7 @@ public class Robot {
 	private final EV3TouchSensor touchLeftSensor;
 	private final EV3TouchSensor touchRightSensor;
 	private final EV3UltrasonicSensor distanceSensor;
-	private final NXTLightSensor lightSensor;
+	private final EV3ColorSensor lightSensor;
 	
 	private final SampleProvider touchLeft, touchRight, light, distance;
 
@@ -43,7 +45,7 @@ public class Robot {
 		distanceSensor = new EV3UltrasonicSensor(LocalEV3.get().getPort("S3"));
 		// Assuming that port S2 is indeed the color sensor
 		
-		lightSensor = new NXTLightSensor(LocalEV3.get().getPort("S2"));
+		lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S2"));
 		// Initialize Sample Providers
 		touchLeft = touchLeftSensor.getTouchMode();
 		touchRight = touchRightSensor.getTouchMode();
@@ -55,11 +57,16 @@ public class Robot {
 		// Make some noise to indicate that the robot is alive
 		Sound.buzz();
 		// Draw name on screen
-		LCD.drawString("Hello, my name is " + name, 0, 1);
+		//LCD.drawString("Hello, my name is " + name, 0, 1);
 		/*
 		 * Our Arbitrator, see http://www.lejos.org/nxt/nxj/tutorial/Behaviors/BehaviorProgramming.htm
 		 */
-		Behavior[] behaviors = {new DriveForwardBehavior(this), new CheckDistanceBehavior(this), new OnTouchTurnBehavior(this), new AvoidBlackBorder(this)};
+		//, new CheckDistanceBehavior(this), new OnTouchTurnBehavior(this), new AvoidBlackBorder(this)
+		//
+		//
+		boolean master = false;
+		//FIXME: bluetoothConnector object accessible from detectColorBehavior and ReadBluetoothMessageBehavior.
+		Behavior[] behaviors = {new DriveForwardBehavior(this), new DetectColorBehavior(this, master), new ReadBluetoothMessageBehavior(this, master)};
 		Arbitrator arbitrator = new Arbitrator(behaviors);
 		arbitrator.go();
 	}
@@ -72,6 +79,10 @@ public class Robot {
 	 * with ID of 0-7 respectively.
 	 * @return The color ID of the surface.
 	 */
+	public int getColorId(){
+		return lightSensor.getColorID();
+	}
+	
 	public float getFloorColor(){
 		float [] sampleSize = new float[light.sampleSize()];
 		light.fetchSample(sampleSize, 0);
