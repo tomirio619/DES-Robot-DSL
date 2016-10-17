@@ -9,22 +9,28 @@ public class ReadBluetoothMessageBehavior implements Behavior{
 
 	private BluetoothConnector connector;
 	private Robot robot;
+	private static boolean messageReady = false; 
 	
-	public ReadBluetoothMessageBehavior(Robot r, boolean master) {
+	public ReadBluetoothMessageBehavior(Robot r, boolean master, BluetoothConnector connector) {
 		this.robot = r;
-		connector = new BluetoothConnectorContainer(master).getInstance();
+		this.connector = connector;
+		connector.checkForMessage();
 	}
 	
 	@Override
 	public boolean takeControl() {
-		return connector.isThereAMessage();
+		return messageReady;
 	}
 
 	@Override
 	public void action() {
-		String received = connector.getMessage();
-		System.out.println(received);
-		if(received.equals("complete")){
+		int received = connector.getMessage();
+		System.out.println("Received: " + received);
+		DetectColorBehavior.addColor(received);
+		DetectColorBehavior.getColors();
+		
+		messageReady = false;
+		if(received == -2){
 			System.out.println("Completed");
 			robot.stopLeftMotor();
 			robot.stopRightMotor();
@@ -34,6 +40,10 @@ public class ReadBluetoothMessageBehavior implements Behavior{
 	@Override
 	public void suppress() {
 		// TODO Auto-generated method stub
+	}
+	
+	public static void setMessageReady(boolean b){
+		messageReady = b;
 	}
 
 }

@@ -7,20 +7,16 @@ public class BluetoothConnectorContainer {
 	
 	public BluetoothConnectorContainer(boolean master){
 		this.isMaster = master;
+		if(isMaster){
+			//FIXME: Pass the Rover with which you would like to connect to, currently hardcoded. 
+			controller = new BluetoothConnector(2);
+		}else{
+			controller = new BluetoothConnector();
+		}
 	}
 	
 	public BluetoothConnector getInstance(){
-		if (controller == null){
-			if(isMaster){
-				//FIXME: Pass the Rover with which you would like to connect to, currently hardcoded. 
-				controller = new BluetoothConnector(4);
-			}else{
-				controller = new BluetoothConnector();
-			}
-		}else{
-			return controller;
-		}
-		return null;
+		return controller;
 	}
 	
 }

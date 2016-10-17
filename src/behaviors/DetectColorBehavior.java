@@ -12,39 +12,54 @@ import main.Robot;
 public class DetectColorBehavior implements Behavior{
 
 	private Robot robot;
-	private List<Integer> colors;
+	private static List<Integer> colors;
 	private BluetoothConnector connector;
 	private int colorId;
 	private boolean suppressed = false;
 	
-	public DetectColorBehavior(Robot r, boolean master) {
+	public DetectColorBehavior(Robot r, boolean master, BluetoothConnector connector) {
 		this.robot = r;
 		this.colors = new ArrayList<>();
 		
-		connector = new BluetoothConnectorContainer(master).getInstance();
+		this.connector = connector;
 	}
 	
 	@Override
 	public boolean takeControl() {
 		this.colorId = robot.getColorId();
-		return colorId == Color.BLUE || colorId == Color.YELLOW || colorId == Color.RED;
+		return (colorId == Color.BLUE || colorId == Color.YELLOW || colorId == Color.RED) && !colors.contains(colorId);
 	}
 
 	@Override
 	public void action() {
-		System.out.println("Found color " + colorId);
+		//System.out.println("Found color " + colorId);
 		connector.writeMessage(String.valueOf(colorId));
+		System.out.println("Message send");
 		if (! colors.contains(colorId) ){
 			colors.add(colorId);
+			getColors();
 		}else if (colors.size() == 3){
-			connector.writeMessage("complete");
+			connector.writeMessage("-2");
 		}
 	}
 
 	@Override
 	public void suppress() {
-		suppressed = true;
-		
+		suppressed = true;	
+	}
+	
+	public static void addColor(int i){
+		if(! colors.contains(i) && colors.size() < 3){
+			colors.add(i);
+		}else{
+			System.out.println("Not gonna add");
+		}
+	}
+	
+	public static void getColors(){
+		for(int i = 0 ; i < colors.size(); i++){
+			System.out.println(Integer.toString(colors.get(i)));
+		}
 	}
 
 }

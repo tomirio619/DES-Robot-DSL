@@ -5,6 +5,9 @@ import behaviors.DetectColorBehavior;
 import behaviors.DriveForwardBehavior;
 import behaviors.OnTouchTurnBehavior;
 import behaviors.ReadBluetoothMessageBehavior;
+import bluetooth.BluetoothConnector;
+import bluetooth.BluetoothConnectorContainer;
+import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
@@ -64,8 +67,12 @@ public class Robot {
 		//, new CheckDistanceBehavior(this), new OnTouchTurnBehavior(this), new AvoidBlackBorder(this)
 		//
 		//
-		boolean master = false;
-		Behavior[] behaviors = {new DriveForwardBehavior(this), new DetectColorBehavior(this, master), new ReadBluetoothMessageBehavior(this, master)};
+		boolean master = BrickFinder.getLocal().getName().equals("Rover1");
+		BluetoothConnector connector = new BluetoothConnectorContainer(master).getInstance();
+		
+		//;
+		//new DriveForwardBehavior(this),
+		Behavior[] behaviors = { new DriveForwardBehavior(this), new DetectColorBehavior(this, master, connector), new ReadBluetoothMessageBehavior(this, master, connector), new AvoidBlackBorder(this)};
 		Arbitrator arbitrator = new Arbitrator(behaviors);
 		arbitrator.go();
 	}

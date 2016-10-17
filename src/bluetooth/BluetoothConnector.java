@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import behaviors.ReadBluetoothMessageBehavior;
 import lejos.remote.nxt.BTConnector;
 import lejos.remote.nxt.NXTConnection;
 
@@ -14,6 +15,7 @@ public class BluetoothConnector {
 	private final int TIMEOUT = 60000;
 	private final NXTConnection connection;
 	private byte[] buffer = new byte[32];
+	private int j = -1;
 	
 	/*
 	 * Master constructor
@@ -28,9 +30,8 @@ public class BluetoothConnector {
 			System.out.println("Could not connect to " + robots[robotNr-1]);
 		}else{
 			System.out.println("Connection success");
+			writer = new PrintWriter(connection.openDataOutputStream());
 		}
-		
-		writer = new PrintWriter(connection.openOutputStream());
 	}
 	
 	public BluetoothConnector getBluetoothConnector(){
@@ -51,27 +52,31 @@ public class BluetoothConnector {
 		writer.flush();
 	}
 	
-	public boolean isThereAMessage(){
+	public void checkForMessage(){
 		DataInputStream reader = connection.openDataInputStream();
-		byte b;
-		int i = 0;
-		try{
-			while((b = reader.readByte()) != '\n'){
-				buffer[i++] = b;
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				byte b;
+				int i = 0;
+				
+				try{
+					j = reader.readInt();
+					System.out.println("Klaar " + j);
+					ReadBluetoothMessageBehavior.setMessageReady(j != -1);
+				}catch (IOException ex){
+					System.out.println("EXCP\n" + ex.getMessage());
+					ReadBluetoothMessageBehavior.setMessageReady(false);
+				}
 			}
-			if(buffer.length > 0){
-				return true;
-			}
-		}catch (IOException ex){
-			System.out.println(ex.getMessage());
-		}
-		return false;
+		}).start();
 	}
 	
-	public String getMessage(){
-		String message = new String(buffer);
-		buffer = new byte[32];
-		return message;
+	public int getMessage(){
+		int copy = j;
+		j = -1;
+		return copy;
 	}
 	
 }
