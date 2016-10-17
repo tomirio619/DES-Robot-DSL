@@ -37,9 +37,8 @@ public class DetectColorBehavior implements Behavior{
 		System.out.println("Message send");
 		if (! colors.contains(colorId) ){
 			colors.add(colorId);
-			getColors();
 		}else if (colors.size() == 3){
-			connector.writeMessage("-2");
+			connector.writeMessage("complete");
 		}
 	}
 

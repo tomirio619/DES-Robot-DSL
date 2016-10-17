@@ -15,7 +15,6 @@ public class BluetoothConnector {
 	private final int TIMEOUT = 60000;
 	private final NXTConnection connection;
 	private byte[] buffer = new byte[32];
-	private int j = -1;
 	
 	/*
 	 * Master constructor
@@ -62,9 +61,13 @@ public class BluetoothConnector {
 				int i = 0;
 				
 				try{
-					j = reader.readInt();
-					System.out.println("Klaar " + j);
-					ReadBluetoothMessageBehavior.setMessageReady(j != -1);
+					while((b = reader.readByte()) != '\n'){
+						buffer[i++] = b;
+						System.out.println("b: " + b);
+					}
+					boolean status = buffer.length > 0;
+					System.out.println("Klaar " + status);
+					ReadBluetoothMessageBehavior.setMessageReady(buffer.length > 0);
 				}catch (IOException ex){
 					System.out.println("EXCP\n" + ex.getMessage());
 					ReadBluetoothMessageBehavior.setMessageReady(false);
@@ -73,10 +76,10 @@ public class BluetoothConnector {
 		}).start();
 	}
 	
-	public int getMessage(){
-		int copy = j;
-		j = -1;
-		return copy;
+	public String getMessage(){
+		String message = new String(buffer);
+		buffer = new byte[32];
+		return message;
 	}
 	
 }

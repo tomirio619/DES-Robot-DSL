@@ -24,13 +24,13 @@ public class ReadBluetoothMessageBehavior implements Behavior{
 
 	@Override
 	public void action() {
-		int received = connector.getMessage();
+		String received = connector.getMessage();
 		System.out.println("Received: " + received);
-		DetectColorBehavior.addColor(received);
+		DetectColorBehavior.addColor(Integer.valueOf(received));
 		DetectColorBehavior.getColors();
 		
 		messageReady = false;
-		if(received == -2){
+		if(received.equals("complete")){
 			System.out.println("Completed");
 			robot.stopLeftMotor();
 			robot.stopRightMotor();
