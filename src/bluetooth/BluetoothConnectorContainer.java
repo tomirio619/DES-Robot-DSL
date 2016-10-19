@@ -1,5 +1,10 @@
 package bluetooth;
 
+/**
+ * Container for the bluetooth connector
+ * In order to prevent NullPointer
+ */
+
 public class BluetoothConnectorContainer {
 
 	private BluetoothConnector controller;

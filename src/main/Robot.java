@@ -23,6 +23,14 @@ import lejos.robotics.SampleProvider;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
+/**
+ * We tested the color detection and sending of the colorId and receival via Bluetooth.
+ * However we got an NumberFormatException during the storing of the received value to an List
+ * Because we got "3 instead of just 3. Maybe we can test this wednesday.
+ * @author Abdullah Rasool, Tom Sandmann
+ *
+ */
+
 public class Robot {
 	
 	private final String name;
@@ -64,15 +72,18 @@ public class Robot {
 		/*
 		 * Our Arbitrator, see http://www.lejos.org/nxt/nxj/tutorial/Behaviors/BehaviorProgramming.htm
 		 */
-		//, new CheckDistanceBehavior(this), new OnTouchTurnBehavior(this), new AvoidBlackBorder(this)
 		//
 		//
 		boolean master = BrickFinder.getLocal().getName().equals("Rover1");
 		BluetoothConnector connector = new BluetoothConnectorContainer(master).getInstance();
+		Colors c = new Colors();
 		
-		//;
-		//new DriveForwardBehavior(this),
-		Behavior[] behaviors = { new DriveForwardBehavior(this), new DetectColorBehavior(this, master, connector), new ReadBluetoothMessageBehavior(this, master, connector), new AvoidBlackBorder(this)};
+		Behavior[] behaviors = { new DriveForwardBehavior(this), 
+				new CheckDistanceBehavior(this), 
+				new OnTouchTurnBehavior(this), 
+				new DetectColorBehavior(this, master, connector, c), 
+				new ReadBluetoothMessageBehavior(this, master, connector, c), 
+				new AvoidBlackBorder(this)};
 		Arbitrator arbitrator = new Arbitrator(behaviors);
 		arbitrator.go();
 	}

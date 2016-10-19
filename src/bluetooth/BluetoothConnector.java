@@ -8,6 +8,10 @@ import behaviors.ReadBluetoothMessageBehavior;
 import lejos.remote.nxt.BTConnector;
 import lejos.remote.nxt.NXTConnection;
 
+/**
+ * In this class we handle the bluetooth connection
+ * 
+ */
 public class BluetoothConnector {
 	
 	private final String[] robots = {"Rover1", "Rover2", "Rover3", "Rover4"};
@@ -18,6 +22,7 @@ public class BluetoothConnector {
 	
 	/*
 	 * Master constructor
+	 * connect to a specific robot
 	 */
 	public BluetoothConnector(int robotNr){
 		BTConnector connector = new BTConnector();
@@ -39,6 +44,7 @@ public class BluetoothConnector {
 	
 	/*
 	 * Slave constructor 
+	 * Wait for connection from master
 	 */
 	public BluetoothConnector(){
 		BTConnector connector = new BTConnector();
@@ -46,15 +52,21 @@ public class BluetoothConnector {
 		writer = new PrintWriter(connection.openOutputStream());
 	}
 	
+	/*
+	 *	Send message on the connection to the other robot 
+	 */
 	public void writeMessage(String message){
 		writer.println(message);
 		writer.flush();
 	}
 	
-	public void checkForMessage(){
+	/**
+	 * Thread checks whether a message is received from the other robot.
+	 * If that is the case, we set a flag in the ReadMessageBehavior
+	 */
+	public void checkForMessage(ReadBluetoothMessageBehavior beh){
 		DataInputStream reader = connection.openDataInputStream();
 		new Thread(new Runnable(){
-
 			@Override
 			public void run() {
 				byte b;
@@ -67,15 +79,18 @@ public class BluetoothConnector {
 					}
 					boolean status = buffer.length > 0;
 					System.out.println("Klaar " + status);
-					ReadBluetoothMessageBehavior.setMessageReady(buffer.length > 0);
+					beh.setMessageReady(buffer.length > 0);
 				}catch (IOException ex){
 					System.out.println("EXCP\n" + ex.getMessage());
-					ReadBluetoothMessageBehavior.setMessageReady(false);
+					beh.setMessageReady(false);
 				}
 			}
 		}).start();
 	}
 	
+	/**
+	 * @return received message
+	 */
 	public String getMessage(){
 		String message = new String(buffer);
 		buffer = new byte[32];
