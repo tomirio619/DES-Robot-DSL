@@ -14,7 +14,7 @@ public class BluetoothConnectorContainer {
 		this.isMaster = master;
 		if(isMaster){
 			//FIXME: Pass the Rover with which you would like to connect to, currently hardcoded. 
-			controller = new BluetoothConnector(2);
+			controller = new BluetoothConnector("Rover5");
 		}else{
 			controller = new BluetoothConnector();
 		}

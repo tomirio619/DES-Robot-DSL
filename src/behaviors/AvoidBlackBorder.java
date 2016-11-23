@@ -2,14 +2,14 @@ package behaviors;
 
 
 import lejos.robotics.subsumption.Behavior;
-import main.Robot;
+import main.MasterRobot;
 
 public class AvoidBlackBorder implements Behavior {
 	
-	private final Robot robot;
+	private final MasterRobot robot;
 	private boolean suppressed = false;
 	
-	public AvoidBlackBorder(Robot robot){
+	public AvoidBlackBorder(MasterRobot robot){
 		this.robot = robot;
 	}
 

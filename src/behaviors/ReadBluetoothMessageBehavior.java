@@ -1,9 +1,8 @@
 package behaviors;
 
 import bluetooth.BluetoothConnector;
-import bluetooth.BluetoothConnectorContainer;
 import lejos.robotics.subsumption.Behavior;
-import main.Colors;
+import main.MasterRobot;
 import main.Robot;
 
 /**
@@ -16,14 +15,12 @@ import main.Robot;
 public class ReadBluetoothMessageBehavior implements Behavior{
 
 	private BluetoothConnector connector;
-	private Robot robot;
+	private MasterRobot robot;
 	private boolean messageReady = false; 
-	private Colors c;
 	
-	public ReadBluetoothMessageBehavior(Robot r, boolean master, BluetoothConnector connector, Colors c) {
+	public ReadBluetoothMessageBehavior(MasterRobot r, BluetoothConnector connector) {
 		this.robot = r;
 		this.connector = connector;
-		this.c = c;
 		connector.checkForMessage(this);
 	}
 	
@@ -36,8 +33,6 @@ public class ReadBluetoothMessageBehavior implements Behavior{
 	public void action() {
 		String received = connector.getMessage().trim();
 		System.out.println("Received: " + received + " " + received.length());
-		c.addColor(received);
-		c.printColors();
 		
 		messageReady = false;
 		if(received.equals("complete")){

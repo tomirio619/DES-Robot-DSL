@@ -1,15 +1,20 @@
 package behaviors;
 
+import bluetooth.BluetoothConnector;
 import lejos.robotics.subsumption.Behavior;
-import main.Robot;
+import main.MasterRobot;
 
 public class DriveForwardBehavior implements Behavior{
 
-	private Robot robot;
+	private MasterRobot robot;
 	private boolean suppressed = false;
 	
-	public DriveForwardBehavior(Robot r){
+	//For testing
+	private BluetoothConnector connector;
+	
+	public DriveForwardBehavior(MasterRobot r, BluetoothConnector connector){
 		this.robot = r;
+		this.connector = connector;
 	}
 	
 	@Override
@@ -26,6 +31,9 @@ public class DriveForwardBehavior implements Behavior{
 		// Make both motors go forward
 		robot.getLeftMotor().forward();
 		robot.getRightMotor().forward();
+		
+		connector.writeMessage("1337");
+		
 		while(!suppressed){
 			// Wait till turn is complete or suppressed is called
 			Thread.yield();

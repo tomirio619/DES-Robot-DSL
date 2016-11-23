@@ -1,14 +1,9 @@
 package behaviors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import bluetooth.BluetoothConnector;
-import bluetooth.BluetoothConnectorContainer;
 import lejos.robotics.Color;
 import lejos.robotics.subsumption.Behavior;
-import main.Colors;
-import main.Robot;
+import main.MasterRobot;
 
 /*
  * In this behavior we we first connect to the slave or wait for the connection from the master (depending on whether we are the master or the slave)
@@ -16,22 +11,22 @@ import main.Robot;
  */
 public class DetectColorBehavior implements Behavior{
 
-	private Robot robot;
+	private MasterRobot robot;
 	private BluetoothConnector connector;
-	private int colorId;
+	private float[] rgb;
 	private boolean suppressed = false;
-	private Colors c;
 	
-	public DetectColorBehavior(Robot r, boolean master, BluetoothConnector connector, Colors c) {
+	public DetectColorBehavior(MasterRobot r, boolean master, BluetoothConnector connector) {
 		this.robot = r;
-		this.c = c;
 		this.connector = connector;
 	}
 	
 	@Override
 	public boolean takeControl() {
-		this.colorId = robot.getColorId();
-		return (colorId == Color.BLUE || colorId == Color.YELLOW || colorId == Color.RED) && !c.colorExists(colorId);
+		this.rgb = robot.getColorRGB();
+		//fromRgbToColor(this.rgb);
+		return true;
+		//return (colorId == Color.BLUE || colorId == Color.YELLOW || colorId == Color.RED) && !c.colorExists(colorId);
 	}
 
 	@Override
@@ -41,27 +36,6 @@ public class DetectColorBehavior implements Behavior{
 	 */
 	public void action() {
 		String message = "";
-		switch(colorId){
-		case Color.BLUE:
-			message = "B";
-			break;
-		case Color.YELLOW:
-			message = "Y";
-			break;
-		case Color.RED:
-			message = "R";
-			break;
-		}
-		
-		c.addColor(message);
-		
-		connector.writeMessage(message);
-		System.out.println("Message send");
-		
-		if(c.isDone()){
-			connector.writeMessage("complete");
-			System.out.println("Ik ben klaar");
-		}
 	}
 
 	@Override

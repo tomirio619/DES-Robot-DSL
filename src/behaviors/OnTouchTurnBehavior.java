@@ -1,31 +1,23 @@
 package behaviors;
 
 import lejos.robotics.subsumption.Behavior;
-import main.Robot;
+import main.MasterRobot;
 
 public class OnTouchTurnBehavior implements Behavior{
 
-	private Robot robot;
+	private MasterRobot robot;
 	private boolean suppressed = false;
 	private boolean collisionLeft = false;
 	private boolean collisionRight = false;
 	
-	public OnTouchTurnBehavior (Robot r) {
+	public OnTouchTurnBehavior (MasterRobot r) {
 		this.robot = r;
 	}
 	
 	@Override
 	public boolean takeControl() {
-		if (robot.getTouchLeftValue() == 1.0){
-			collisionLeft = true;
-			return true;
-		}else if(robot.getTouchRightValue() == 1.0){
-			collisionRight = true;
-			return true;
-		}
-		else{
-			return false;
-		}
+		return true;
+		//Event 
 	}
 
 	@Override
