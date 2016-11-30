@@ -1,20 +1,20 @@
 package behaviors;
 
 import lejos.robotics.subsumption.Behavior;
-import main.Robot;
+import main.MasterRobot;
 
 public class CheckDistanceBehavior implements Behavior{
 
-	private Robot robot;
+	private MasterRobot robot;
 	private boolean suppressed = false;
 	
-	public CheckDistanceBehavior(Robot r) {
+	public CheckDistanceBehavior(MasterRobot r) {
 		this.robot = r;
 	}
 	
 	@Override
 	public boolean takeControl() {
-		return robot.getDistanceValue() <= 0.33;
+		return robot.getBackDistanceValue() <= 0.33;
 	}
 
 	@Override

@@ -8,14 +8,26 @@ import lejos.robotics.SampleProvider;
 
 public class SlaveRobot extends Robot {
 
+	/**
+	 * The left touch sensor
+	 */
 	private final EV3TouchSensor touchLeftSensor;
+	/**
+	 * The right touch sensor
+	 */
 	private final EV3TouchSensor touchRightSensor;
-
+	/**
+	 * The front ultra sensor
+	 */
 	private final EV3UltrasonicSensor frontUltraSensor;
-
+	/**
+	 * The gyro sensor
+	 */
 	private final EV3GyroSensor gyroSensor;
-	
-	private final SampleProvider touchLeft, touchRight, distance;
+	/**
+	 * The sample providers for the sensors
+	 */
+	private final SampleProvider touchLeft, touchRight, ultraBack, gyro;
 
 	public SlaveRobot() {
 		touchLeftSensor = new EV3TouchSensor(LocalEV3.get().getPort("S1"));
@@ -28,23 +40,50 @@ public class SlaveRobot extends Robot {
 		//Sample providers
 		touchLeft = touchLeftSensor.getTouchMode();
 		touchRight = touchRightSensor.getTouchMode();
-		
-		distance = frontUltraSensor.getDistanceMode();
+		ultraBack = frontUltraSensor.getDistanceMode();
+		gyro = gyroSensor.getAngleMode();
 	}
 
-	public float getTouchValue(Direction dir) {
+	/**
+	 * Get the touch value of the touch sensor for a given direction
+	 * @param dir	Specifies from which touch sensor you need obtain the sample
+	 * @return		The touch sample of the touch sensor for the specified dir.
+	 */
+	public int getTouchValue(Direction dir) {
 		switch (dir) {
 			case LEFT: {
 				float[] sampleSize = new float[touchLeftSensor.sampleSize()];
-				touchLeftSensor.fetchSample(sampleSize, 0);
-				return sampleSize[0];
+				touchLeft.fetchSample(sampleSize, 0);
+				return (int) sampleSize[0];
 			}
 			default: {
+				// RIGHT
 				float[] sampleSize = new float[touchRightSensor.sampleSize()];
-				touchRightSensor.fetchSample(sampleSize, 0);
-				return sampleSize[0];
+				touchRight.fetchSample(sampleSize, 0);
+				return (int) sampleSize[0];
 			}
 		}
+	}
+	
+	/**
+	 * Get the current gyro value modulo 360
+	 * @return The gyro value mod 360
+	 */
+	public int getGyroValue(){
+		float[] sampleSize = new float[gyroSensor.sampleSize()];
+		gyro.fetchSample(sampleSize, 0);
+		//FIXME: currently working modulo 360, but this should not be the default behavior.
+		return (int) (sampleSize[0] % 360);
+	}
+	
+	/**
+	 * Get the value of the ultrasonic sensor on the back.
+	 * @return float of the current sample of the ultrasonic sensor on the back.
+	 */
+	public float getFrontUltraValue(){
+		float[] sampleSize = new float[frontUltraSensor.sampleSize()];
+		ultraBack.fetchSample(sampleSize, 0);
+		return sampleSize[0];
 	}
 
 }

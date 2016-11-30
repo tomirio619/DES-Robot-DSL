@@ -32,8 +32,7 @@ public class DriveForwardBehavior implements Behavior{
 		robot.getLeftMotor().forward();
 		robot.getRightMotor().forward();
 		
-		connector.writeMessage("1337");
-		
+	
 		while(!suppressed){
 			// Wait till turn is complete or suppressed is called
 			Thread.yield();

@@ -33,7 +33,7 @@ public class MasterRobot extends Robot{
 		
 		colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S4"));
 		
-		//Sample Provider
+		//Sample Providers
 		leftLight = leftLightSensor.getRedMode();
 		rightLight = rightLightSensor.getRedMode();
 		color = colorSensor.getRGBMode();
@@ -81,19 +81,29 @@ public class MasterRobot extends Robot{
 	 */
 	public float[] getColorRGB(){
 		float [] sampleSize = new float [colorSensor.sampleSize()];
-		colorSensor.fetchSample(sampleSize, 0);
+		color.fetchSample(sampleSize, 0);
 		return sampleSize;
 	}
-	
+		
+	/**
+	 * Get the floor color as a float.
+	 * @return float indiciating the floor color.
+	 */
 	public float getFloorColor(){
 		float [] sampleSize = new float[colorSensor.sampleSize()];
-		colorSensor.fetchSample(sampleSize, 0);
+		color.fetchSample(sampleSize, 0);
 		return sampleSize[0];
 	}
 	
-	public float getDistanceValue(){
+	/**
+	 * Get the value of the ultrasonic sensor on the back.
+	 * Note that this sensor points down, so it can be used to prevent from falling off
+	 * the platform when driving backwards.
+	 * @return float value of the current sample of the ultrasonic sensor.
+	 */
+	public float getBackDistanceValue(){
 		float[] sampleSize = new float[backUltraSensor.sampleSize()];
-		backUltraSensor.fetchSample(sampleSize, 0);
+		distance.fetchSample(sampleSize, 0);
 		return sampleSize[0];
 	}
 	

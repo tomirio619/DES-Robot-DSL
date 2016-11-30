@@ -10,16 +10,24 @@ public class BluetoothConnectorContainer {
 	private BluetoothConnector controller;
 	private boolean isMaster;
 	
-	public BluetoothConnectorContainer(boolean master){
+	/**
+	 * Constructor
+	 * @param master		Indicates if the robot is the master
+	 * @param masterName	The name of the master
+	 */
+	public BluetoothConnectorContainer(boolean master, String masterName){
 		this.isMaster = master;
 		if(isMaster){
-			//FIXME: Pass the Rover with which you would like to connect to, currently hardcoded. 
-			controller = new BluetoothConnector("Rover5");
+			controller = new BluetoothConnector(masterName);
 		}else{
 			controller = new BluetoothConnector();
 		}
 	}
 	
+	/**
+	 * Get the BluetoothConnector instance
+	 * @return BluetoothConnector instance
+	 */
 	public BluetoothConnector getInstance(){
 		return controller;
 	}
