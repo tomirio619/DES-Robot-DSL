@@ -31,7 +31,6 @@ public class DriveForwardBehavior implements Behavior{
 		// Make both motors go forward
 		robot.getLeftMotor().forward();
 		robot.getRightMotor().forward();
-		
 	
 		while(!suppressed){
 			// Wait till turn is complete or suppressed is called
@@ -46,7 +45,4 @@ public class DriveForwardBehavior implements Behavior{
 	public void suppress() {
 		suppressed = true;
 	}
-	
-	
-
 }

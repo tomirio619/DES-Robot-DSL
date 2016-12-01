@@ -24,9 +24,9 @@ public class BluetoothSensorDataStreamer implements Behavior {
 	 * Constructor
 	 * @param slaveRobot	The slave robot.
 	 */
-	public BluetoothSensorDataStreamer(SlaveRobot slaveRobot){
+	public BluetoothSensorDataStreamer(SlaveRobot slaveRobot, BluetoothConnector connector){
 		this.slaveRobot = slaveRobot;
-		connector = new BluetoothConnector();
+		this.connector = connector;
 		suppressed = false;
 	}
 

@@ -17,7 +17,8 @@ public class BluetoothConnectorContainer {
 	 */
 	public BluetoothConnectorContainer(boolean master, String masterName){
 		this.isMaster = master;
-		if(isMaster){
+		if(! isMaster){
+			//The slave inits the bluetooth connection
 			controller = new BluetoothConnector(masterName);
 		}else{
 			controller = new BluetoothConnector();

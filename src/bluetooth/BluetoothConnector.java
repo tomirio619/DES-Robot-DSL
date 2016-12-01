@@ -1,8 +1,11 @@
 package bluetooth;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
@@ -24,6 +27,7 @@ public class BluetoothConnector {
 	 * The print writer, for writing messages using bluetooth
 	 */
 	private PrintWriter writer = null;
+	
 	/**
 	 * The timeout value for bluetooth
 	 */
@@ -53,7 +57,7 @@ public class BluetoothConnector {
 		BTConnector connector = new BTConnector();
 		// Get the corresponding slave robot
 		String correspondingSlave = pairedRobots.get(masterRobotName);
-		System.out.println("Trying to connect to " + correspondingSlave) ;
+		System.out.println("Trying to connect to " + correspondingSlave);
 		connection = connector.connect(correspondingSlave, NXTConnection.RAW);
 		if(connection == null){
 			System.out.println("Could not connect to " + correspondingSlave);
@@ -88,14 +92,18 @@ public class BluetoothConnector {
 	 * @param gyro			The value of the gyro
 	 */
 	public void writeMessage(int touchLeft, int touchRight, float frontUltra, float gyro){
-		// Sending a batch of sensor values to the master. This is done using JSON
+		// Sending a batch of sensor values to the master. 		
 		StringBuilder batch = new StringBuilder();
 		// Add all of the data to the current batch
-		batch.append(touchLeft).append(" ")
+		batch
+		.append(touchLeft).append(" ")
 		.append(touchRight).append(" ")
 		.append(frontUltra).append(" ")
 		.append(gyro);
-		writer.write(batch.toString());
+		
+		System.out.println(batch.toString());
+
+		writer.println(batch.toString());
 		// Flush it.
 		writer.flush();
 	}
@@ -106,23 +114,38 @@ public class BluetoothConnector {
 	 * If that is the case, we set a flag in the ReadMessageBehavior
 	 */
 	public void checkForMessage(){
-		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.openInputStream()));
+		//BufferedReader reader = new BufferedReader(new InputStreamReader(connection.openInputStream()));
+		DataInputStream reader = connection.openDataInputStream();
 		new Thread(new Runnable(){
 			@Override
 			public void run() {
-				try{
-					// The following call is blocking
-					message = reader.readLine();
-					messageReady = (message.length() > 0);
-					if (messageReady){
-						notifyAll();
+				while(true){
+					try{
+						message = reader.readLine();
+						messageReady = (message.length() > 0);
+
+						if (messageReady){
+							updateValues();
+						}
+					}catch (IOException ex){
+						System.out.println("EXCP\n" + ex.getMessage());
+						messageReady = false;
 					}
-				}catch (IOException ex){
-					System.out.println("EXCP\n" + ex.getMessage());
-					messageReady = false;
 				}
 			}
 		}).start();
+	}
+	
+	/**
+	 * Update sensor values
+	 */
+	private void updateValues(){
+		String [] sensorValues = message.split("\\s+");
+		System.out.println(message);
+		SlaveSensorData.touchLeft = Integer.parseInt(sensorValues[0]);
+		SlaveSensorData.touchRight = Integer.parseInt(sensorValues[1]);
+		SlaveSensorData.frontUltra = Float.parseFloat(sensorValues[2]);
+		SlaveSensorData.gyro = Float.parseFloat(sensorValues[3]);
 	}
 	
 	/**

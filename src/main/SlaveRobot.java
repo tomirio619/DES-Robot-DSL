@@ -11,23 +11,23 @@ public class SlaveRobot extends Robot {
 	/**
 	 * The left touch sensor
 	 */
-	private final EV3TouchSensor touchLeftSensor;
+	private EV3TouchSensor touchLeftSensor;
 	/**
 	 * The right touch sensor
 	 */
-	private final EV3TouchSensor touchRightSensor;
+	private EV3TouchSensor touchRightSensor;
 	/**
 	 * The front ultra sensor
 	 */
-	private final EV3UltrasonicSensor frontUltraSensor;
+	private EV3UltrasonicSensor frontUltraSensor;
 	/**
 	 * The gyro sensor
 	 */
-	private final EV3GyroSensor gyroSensor;
+	private EV3GyroSensor gyroSensor;
 	/**
 	 * The sample providers for the sensors
 	 */
-	private final SampleProvider touchLeft, touchRight, ultraBack, gyro;
+	private SampleProvider touchLeft, touchRight, ultraBack, gyro;
 
 	public SlaveRobot() {
 		touchLeftSensor = new EV3TouchSensor(LocalEV3.get().getPort("S1"));
