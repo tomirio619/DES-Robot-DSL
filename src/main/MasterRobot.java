@@ -1,5 +1,7 @@
 package main;
 
+import java.math.BigDecimal;
+
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
@@ -79,22 +81,16 @@ public class MasterRobot extends Robot{
 	 * with ID of 0-7 respectively.
 	 * @return The color ID of the surface.
 	 */
-	public float[] getColorRGB(){
-		float [] sampleSize = new float [colorSensor.sampleSize()];
+	public float[] getFloorColor(){
+		/**
+		 * colorsensor.sampleSize() has the value 1
+		 * If you want to use RGB measurements, you should change it to 3.
+		 */
+		float [] sampleSize = new float [3];
 		color.fetchSample(sampleSize, 0);
 		return sampleSize;
 	}
 		
-	/**
-	 * Get the floor color as a float.
-	 * @return float indiciating the floor color.
-	 */
-	public float getFloorColor(){
-		float [] sampleSize = new float[colorSensor.sampleSize()];
-		color.fetchSample(sampleSize, 0);
-		return sampleSize[0];
-	}
-	
 	/**
 	 * Get the value of the ultrasonic sensor on the back.
 	 * Note that this sensor points down, so it can be used to prevent from falling off
@@ -105,7 +101,5 @@ public class MasterRobot extends Robot{
 		float[] sampleSize = new float[backUltraSensor.sampleSize()];
 		distance.fetchSample(sampleSize, 0);
 		return sampleSize[0];
-	}
-	
-	
+	}	
 }

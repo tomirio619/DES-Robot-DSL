@@ -4,18 +4,18 @@ package behaviors;
 import lejos.robotics.subsumption.Behavior;
 import main.MasterRobot;
 
-public class AvoidBlackBorder implements Behavior {
+public class OnBorderBehavior implements Behavior {
 	
 	private final MasterRobot robot;
 	private boolean suppressed = false;
 	
-	public AvoidBlackBorder(MasterRobot robot){
+	public OnBorderBehavior(MasterRobot robot){
 		this.robot = robot;
 	}
 
 	@Override
 	public boolean takeControl() {
-		return robot.getFloorColor() <= 0.42;
+		return robot.getFloorColor()[0] <= 0.42;
 	}
 
 	@Override

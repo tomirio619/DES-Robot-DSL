@@ -3,14 +3,14 @@ package behaviors;
 import lejos.robotics.subsumption.Behavior;
 import main.MasterRobot;
 
-public class OnTouchTurnBehavior implements Behavior{
+public class OnTouchBehavior implements Behavior{
 
 	private MasterRobot robot;
 	private boolean suppressed = false;
 	private boolean collisionLeft = false;
 	private boolean collisionRight = false;
 	
-	public OnTouchTurnBehavior (MasterRobot r) {
+	public OnTouchBehavior (MasterRobot r) {
 		this.robot = r;
 	}
 	
@@ -32,11 +32,12 @@ public class OnTouchTurnBehavior implements Behavior{
 		if (collisionLeft){
 			// Turn right
 			System.out.println("Left C");
+			// Specify behavior on collision left here
 			robot.getRightMotor().rotate(-180, true);
 			robot.getLeftMotor().rotate(180, true);
 		}else{
-			// Turn left
 			System.out.println("Right C");
+			// Specify behavior on collision right here
 			robot.getRightMotor().rotate(180, true);
 			robot.getLeftMotor().rotate(-180, true);
 		}

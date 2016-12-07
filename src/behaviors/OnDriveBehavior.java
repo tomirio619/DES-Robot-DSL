@@ -1,43 +1,48 @@
 package behaviors;
 
+import bluetooth.BluetoothConnector;
 import lejos.robotics.subsumption.Behavior;
 import main.MasterRobot;
 
-public class CheckDistanceBehavior implements Behavior{
+public class OnDriveBehavior implements Behavior{
 
 	private MasterRobot robot;
 	private boolean suppressed = false;
 	
-	public CheckDistanceBehavior(MasterRobot r) {
+	/**
+	 * 
+	 * @param r	
+	 */
+	public OnDriveBehavior(MasterRobot r){
 		this.robot = r;
 	}
 	
 	@Override
 	public boolean takeControl() {
-		return robot.getBackDistanceValue() <= 0.33;
+		return true;
 	}
 
 	@Override
 	public void action() {
 		// Set suppressed to false
 		suppressed = false;
-		// Turn right
-		robot.getLeftMotor().rotate(180, true);
-		robot.getRightMotor().rotate(-180, true);
-		
-		while(robot.getRightMotor().isMoving() && !suppressed){
+		robot.getLeftMotor().setSpeed(120);
+		robot.getRightMotor().setSpeed(120);
+		// Make both motors go forward
+		robot.getLeftMotor().forward();
+		robot.getRightMotor().forward();
+	
+		while(!suppressed){
 			// Wait till turn is complete or suppressed is called
-			Thread.yield();		
+			Thread.yield();
 		}
 		// Clean up
 		robot.stopLeftMotor();
 		robot.stopRightMotor();
-		
 	}
 
 	@Override
 	public void suppress() {
 		suppressed = true;
 	}
-
 }

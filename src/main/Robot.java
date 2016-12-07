@@ -1,6 +1,7 @@
 package main;
 
-import behaviors.DriveForwardBehavior;
+import behaviors.OnColorBehavior;
+import behaviors.OnDriveBehavior;
 import bluetooth.BluetoothConnector;
 import bluetooth.BluetoothConnectorContainer;
 import bluetooth.SlaveSensorData;
@@ -19,7 +20,13 @@ import lejos.robotics.subsumption.Behavior;
 
 public class Robot {
 
+	/**
+	 * Indicates whether this is the master robot
+	 */
 	private boolean isMasterRobot;
+	/**
+	 * The name of the master robot
+	 */
 	private String masterRobotName;
 	
 	/**
@@ -30,7 +37,6 @@ public class Robot {
 	 * The slave robot
 	 */
 	private SlaveRobot slaveRobot = null;
-	
 	/**
 	 * Constructor
 	 */
@@ -38,12 +44,14 @@ public class Robot {
 		determineRobot();
 	}
 	
+	/**
+	 * Init 
+	 */
 	public void init(){
 		if(isMasterRobot)
 			startMasterRobot();
 		else
 			startSlaveRobot();
-		
 		Run();
 	}
 	
@@ -55,6 +63,9 @@ public class Robot {
 		slaveRobot = new SlaveRobot();
 	}
 	
+	/**
+	 * Determine which robot you are and who will setup the bluetooth connector
+	 */
 	private void determineRobot(){
 		// Set the name of the master robot
 		isMasterRobot = false;
@@ -74,17 +85,18 @@ public class Robot {
 	 * Run method of the robot
 	 */
 	public void Run(){
-		BluetoothConnectorContainer container = new BluetoothConnectorContainer(isMasterRobot, masterRobotName);
+		//BluetoothConnectorContainer container = new BluetoothConnectorContainer(isMasterRobot, masterRobotName);
 		if (isMasterRobot){
 			// This is the master robot
 			System.out.print("I'm the master");
-			container.getInstance().checkForMessage();
+			//container.getInstance().checkForMessage();
 			// Start the thread for receiving the sensor values
 			// Define the list of behaviors
-			Behavior[] behaviors = { new DriveForwardBehavior(masterRobot, container.getInstance()), 
+			Behavior[] behaviors = { 
+					//new OnDriveBehavior(masterRobot, container.getInstance()), 
 					//new CheckDistanceBehavior(this), 
 					//new OnTouchTurnBehavior(this), 
-					//new DetectColorBehavior(this, driver, connector, c), 
+					new OnColorBehavior(masterRobot), 
 					//new AvoidBlackBorder(this)
 					};
 			// Create and start the arbitrator
@@ -95,7 +107,9 @@ public class Robot {
 			// This is the slave robot
 			System.out.print("I'm the slave");
 			// Only define one behavior that will stream the sensor values
-			Behavior[] behaviors = {new BluetoothSensorDataStreamer(slaveRobot, container.getInstance())};
+			Behavior[] behaviors = {
+					//new BluetoothSensorDataStreamer(slaveRobot, container.getInstance())
+					};
 			Arbitrator arbitrator = new Arbitrator(behaviors);
 			arbitrator.go();
 		}
