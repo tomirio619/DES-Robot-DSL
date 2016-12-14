@@ -1,6 +1,5 @@
 package behaviors;
 
-import bluetooth.BluetoothConnector;
 import lejos.robotics.subsumption.Behavior;
 import main.MasterRobot;
 
@@ -33,7 +32,7 @@ public class OnDriveBehavior implements Behavior{
 		robot.getRightMotor().forward();
 	
 		while(!suppressed){
-			// Wait till turn is complete or suppressed is called
+			// Keep driving forward until suppressed is called
 			Thread.yield();
 		}
 		// Clean up

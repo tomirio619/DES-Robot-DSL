@@ -1,10 +1,10 @@
 package main;
 
-import behaviors.OnColorBehavior;
+import behaviors.OnBackUltraBehavior;
 import behaviors.OnDriveBehavior;
-import bluetooth.BluetoothConnector;
+import behaviors.OnFrontUltraBehavior;
+import behaviors.OnLightBehavior;
 import bluetooth.BluetoothConnectorContainer;
-import bluetooth.SlaveSensorData;
 import bluetooth.BluetoothSensorDataStreamer;
 import lejos.hardware.BrickFinder;
 import lejos.robotics.subsumption.Arbitrator;
@@ -85,7 +85,7 @@ public class Robot {
 	 * Run method of the robot
 	 */
 	public void Run(){
-		//BluetoothConnectorContainer container = new BluetoothConnectorContainer(isMasterRobot, masterRobotName);
+		BluetoothConnectorContainer container = new BluetoothConnectorContainer(isMasterRobot, masterRobotName);
 		if (isMasterRobot){
 			// This is the master robot
 			System.out.print("I'm the master");
@@ -93,11 +93,10 @@ public class Robot {
 			// Start the thread for receiving the sensor values
 			// Define the list of behaviors
 			Behavior[] behaviors = { 
-					//new OnDriveBehavior(masterRobot, container.getInstance()), 
-					//new CheckDistanceBehavior(this), 
-					//new OnTouchTurnBehavior(this), 
-					new OnColorBehavior(masterRobot), 
-					//new AvoidBlackBorder(this)
+					new OnDriveBehavior(masterRobot), 
+					new OnFrontUltraBehavior(masterRobot), 
+					new OnBackUltraBehavior(masterRobot), 
+					new OnLightBehavior(masterRobot)
 					};
 			// Create and start the arbitrator
 			Arbitrator arbitrator = new Arbitrator(behaviors);
@@ -108,7 +107,7 @@ public class Robot {
 			System.out.print("I'm the slave");
 			// Only define one behavior that will stream the sensor values
 			Behavior[] behaviors = {
-					//new BluetoothSensorDataStreamer(slaveRobot, container.getInstance())
+					new BluetoothSensorDataStreamer(slaveRobot, container.getInstance())
 					};
 			Arbitrator arbitrator = new Arbitrator(behaviors);
 			arbitrator.go();

@@ -27,6 +27,10 @@ public class OnColorBehavior implements Behavior {
 	 * The most recent color measurement
 	 */
 	float[] mostRecentMeasurement = new float[3];
+	/**
+	 * The most recent color ID based on the most recent measurement
+	 */
+	int mostRecentColorID = -1;
 
 	/**
 	 * Colors found so far
@@ -40,16 +44,14 @@ public class OnColorBehavior implements Behavior {
 
 	@Override
 	public boolean takeControl() {
-		// Some conditions on which you want to take control
-		mostRecentMeasurement = masterRobot.getFloorColor();
-		System.out.println(mostRecentMeasurement[0] + "," + mostRecentMeasurement[1] + "," + mostRecentMeasurement[2] );
-		int foundColor = RGBColorWrapper.determineColor(mostRecentMeasurement);
-		if (foundColor == Color.GREEN || foundColor == Color.RED || foundColor == Color.GREEN){
-			//System.out.println("We found the color with color ID" + foundColor) ;
-			return true;
+		mostRecentMeasurement = masterRobot.getColorSensorSample();
+		mostRecentColorID = RGBColorWrapper.determineColor(mostRecentMeasurement);
+		if (mostRecentColorID == Color.GREEN || mostRecentColorID == Color.RED || mostRecentColorID == Color.GREEN){
+			return foundColors.contains(mostRecentColorID);
 		}
-		System.out.println("The found color id was:" + foundColor);
-		return false;
+		else{
+			return false;
+		}
 	}
 
 	/**
@@ -59,10 +61,13 @@ public class OnColorBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		while (!suppressed) {
-			mostRecentMeasurement = masterRobot.getFloorColor();
-			//System.out.println(mostRecentMeasurement[0] + "," + mostRecentMeasurement[1] + "," + mostRecentMeasurement[2]);
-		}
+		// Reset suppressed
+		suppressed = false;
+		// Add the color to our found colors
+		foundColors.add(mostRecentColorID);
+		masterRobot.putArmMotorDown();
+		masterRobot.putArmMotorUp();
+		// Clean up
 	}
 
 	@Override

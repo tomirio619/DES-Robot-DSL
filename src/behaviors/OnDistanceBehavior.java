@@ -14,7 +14,7 @@ public class OnDistanceBehavior implements Behavior{
 	
 	@Override
 	public boolean takeControl() {
-		return robot.getBackDistanceValue() <= 0.33;
+		return robot.getFrontUltraSensorSample() <= 0.33;
 	}
 
 	@Override
@@ -32,7 +32,6 @@ public class OnDistanceBehavior implements Behavior{
 		// Clean up
 		robot.stopLeftMotor();
 		robot.stopRightMotor();
-		
 	}
 
 	@Override
